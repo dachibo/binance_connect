@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "binance-connect"
+version = "0.1.0"
+description = ""
+authors = ["Даниил Павленко <d.pavlenko@mixvel.com>"]
+readme = "README.md"
+packages = [{include = "binance_connect"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+binance-connector = "^1.18.0"
+matplotlib = "^3.6.2"
+mplfinance = "^0.12.9b7"
+jupyterlab = "^3.5.2"
+notebook = "^6.5.2"
+binance-futures-connector = "^3.3.0"
+certifi = "^2022.12.7"
+python-dotenv = "^0.21.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -18,9 +18,10 @@ class CandlestickFinder:
         return False
 
     def is_pin_bar_pattern(self) -> bool:
-        bar_size_medium = round(self.data[2:].Average.mean(), 2)
+        realbody = abs(self.current_bar.Open - self.current_bar.Close)
+        candle_range = self.current_bar.High - self.current_bar.Low
 
-        return (self.current_bar.Average <= bar_size_medium / 3 and min(self.current_bar.Open, self.current_bar.Close) >
-                (self.current_bar.High + self.current_bar.Low) / 2 and self.current_bar.Low < self.prev_bar.Low) or \
-               (self.current_bar.Average <= bar_size_medium / 3 and min(self.current_bar.Open, self.current_bar.Close) <
-                (self.current_bar.High + self.current_bar.Low) / 2 and self.current_bar.Low < self.prev_bar.Low)
+        return (realbody <= candle_range / 3 and min(self.current_bar.Open, self.current_bar.Close) > (
+                self.current_bar.High + self.current_bar.Low) / 2 and self.current_bar.Low < self.prev_bar.Low) or \
+               (realbody <= candle_range / 3 and max(self.current_bar.Open, self.current_bar.Close) < (
+                       self.current_bar.High + self.current_bar.Low) / 2 and self.current_bar.High > self.prev_bar.High)

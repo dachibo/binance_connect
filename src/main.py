@@ -55,7 +55,7 @@ def main(msg):
         klines = um_futures_client.klines(symbol=symbol, interval=interval, limit=5)[:-1]
         df_historical = create_frame_historical(klines=klines)
         all_df = pd.concat([df_realtime, df_historical])
-        logger.info(all_df)
+        logging.info(all_df)
         check_patterns(symbol=symbol,
                        df=all_df,
                        average=round(df_historical.Average.mean(), 2))

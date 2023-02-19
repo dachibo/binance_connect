@@ -22,6 +22,8 @@ def check_patterns(symbol, df):
     finder = CandlestickFinder(df)
     if finder.is_railway_pattern():
         send_message_tg_bot(f"Рельсы на {symbol}")
+    elif finder.is_pin_bar_pattern():
+        send_message_tg_bot(f"Пин-бар на {symbol}")
 
 
 def main(msg):

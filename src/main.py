@@ -2,12 +2,13 @@ import os
 import certifi
 import pandas as pd
 import logging
+import csv
 from binance.um_futures import UMFutures
 from binance.websocket.um_futures.websocket_client import UMFuturesWebsocketClient
 from dotenv import load_dotenv
-from candlestick_finder import CandlestickFinder
-from dataframe_handlers import create_frame_realtime, create_frame_historical
-from tg_bot import send_message_tg_bot
+from src.candlestick_finder import CandlestickFinder
+from src.dataframe_handlers import create_frame_realtime, create_frame_historical
+from src.tg_bot import send_message_tg_bot
 
 logging.basicConfig(
     filename="logs.log",
@@ -20,10 +21,13 @@ um_futures_client = UMFutures(key=os.environ["API_KEY"], secret=os.environ["SECR
 
 def check_patterns(symbol, df):
     finder = CandlestickFinder(df)
-    if finder.is_railway_pattern():
-        send_message_tg_bot(f"Рельсы на {symbol}")
-    elif finder.is_pin_bar_pattern():
-        send_message_tg_bot(f"Пин-бар на {symbol}")
+    with open('dataset.txt', 'a', encoding='utf-8') as txtfile:
+        if finder.is_railway_pattern():
+            send_message_tg_bot(f"Рельсы на {symbol}")
+            txtfile.write(f"Рельсы | {symbol} | {finder.current_bar.CloseTime}\n")
+        elif finder.is_pin_bar_pattern():
+            send_message_tg_bot(f"Пин-бар на {symbol}")
+            txtfile.write(f"Пин-бар | {symbol} | {finder.current_bar.CloseTime}\n")
 
 
 def main(msg):

@@ -3,7 +3,7 @@ import numpy as np
 
 
 def rename_and_astype(df: pd.DataFrame):
-    df.columns = ["OpenTime", "Open", "High", "Low", "Close", "Volume"]
+    df.columns = ["OpenTime", "Open", "High", "Low", "Close", "Volume", "CloseTime"]
     df[["Open", "High", "Low", "Close", "Volume"]] = df[
         ["Open", "High", "Low", "Close", "Volume"]].astype(float)
     df.OpenTime = pd.to_datetime(df.OpenTime, unit='ms')
@@ -14,13 +14,13 @@ def rename_and_astype(df: pd.DataFrame):
 
 def create_frame_historical(klines: list):
     df = pd.DataFrame(klines)
-    df = df.loc[:, [0, 1, 2, 3, 4, 5]]
+    df = df.loc[:, [0, 1, 2, 3, 4, 5, 6]]
     df = rename_and_astype(df)
     return df.sort_values(by="OpenTime", ascending=False)
 
 
 def create_frame_realtime(kline: dict):
     df = pd.DataFrame([kline])
-    df = df.loc[:, ['t', 'o', 'h', 'l', 'c', 'v']]
+    df = df.loc[:, ['t', 'o', 'h', 'l', 'c', 'v', 'T']]
     df = rename_and_astype(df)
     return df

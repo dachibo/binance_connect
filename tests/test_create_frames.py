@@ -1,5 +1,6 @@
 from src.dataframe_handlers import create_frame_realtime, create_frame_historical
 
+
 realtime_kline = {
     "t": 1638747660000,  # Kline start time
     "T": 1638747719999,  # Kline close time
@@ -45,6 +46,7 @@ def test_create_frame_realtime():
     assert fr.Low[0] == float(realtime_kline["l"])
     assert fr.Close[0] == float(realtime_kline["c"])
     assert fr.Volume[0] == float(realtime_kline["v"])
+    assert fr.CloseTime[0] == realtime_kline["T"]
     assert "Average" in fr.columns
     assert fr.Direction[0] in ("long", "short")
 
@@ -56,5 +58,6 @@ def test_create_frame_historical():
     assert fr.Low[0] == float(klines_historical[0][3])
     assert fr.Close[0] == float(klines_historical[0][4])
     assert fr.Volume[0] == float(klines_historical[0][5])
+    assert fr.CloseTime[0] == klines_historical[0][6]
     assert "Average" in fr.columns
     assert fr.Direction[0] in ("long", "short")

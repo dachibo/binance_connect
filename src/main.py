@@ -5,9 +5,9 @@ import logging
 from binance.um_futures import UMFutures
 from binance.websocket.um_futures.websocket_client import UMFuturesWebsocketClient
 from dotenv import load_dotenv
-from src.candlestick_finder import CandlestickFinder
-from src.dataframe_handlers import create_frame_realtime, create_frame_historical
-from src.tg_bot import send_message_tg_bot
+from candlestick_finder import CandlestickFinder
+from dataframe_handlers import create_frame_realtime, create_frame_historical
+from tg_bot import send_message_tg_bot
 
 logging.basicConfig(
     filename="logs.log",

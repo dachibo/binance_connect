@@ -1,6 +1,4 @@
-from src.dataframe_handlers import create_frame_historical
-from src.candlestick_finder import CandlestickFinder
-from src.main import check_patterns
+from src import create_frame_historical, CandlestickFinder
 
 
 def test_rails(history_klines):

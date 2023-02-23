@@ -1,4 +1,4 @@
-from src.dataframe_handlers import create_frame_realtime, create_frame_historical
+from src import create_frame_realtime, create_frame_historical
 
 
 realtime_kline = {

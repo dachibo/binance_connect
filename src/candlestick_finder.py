@@ -22,7 +22,7 @@ class CandlestickFinder:
         realbody = abs(self.current_bar.Open - self.current_bar.Close)
         candle_range = self.current_bar.High - self.current_bar.Low
 
-        if self.current_bar.Average > (bar_size_medium * 1.2):
+        if candle_range > (bar_size_medium * 1.2):
             return (realbody <= candle_range / 3 and min(self.current_bar.Open, self.current_bar.Close) > (
                 self.current_bar.High + self.current_bar.Low) / 2 and self.current_bar.Low < self.prev_bar.Low) or \
                (realbody <= candle_range / 3 and max(self.current_bar.Open, self.current_bar.Close) < (

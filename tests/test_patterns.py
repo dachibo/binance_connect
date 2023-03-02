@@ -1,28 +1,27 @@
 from src import create_frame_historical, CandlestickFinder
 
 
-def test_rails(history_klines):
-    for rail in history_klines['rails']:
-        df = create_frame_historical(klines=rail)
-        assert CandlestickFinder(data=df).is_railway_pattern()
+def test_patterns(history_klines):
+    for pattern, klines in history_klines.items():
+        for kline in klines:
+            df = create_frame_historical(klines=kline)
+            finder = CandlestickFinder(data=df)
+            if pattern == 'rails':
+                assert finder.is_railway_pattern()
+            elif pattern == 'pinbars':
+                assert finder.is_pin_bar_pattern()
 
 
-def test_not_rails(history_bad_klines):
-    for rail in history_bad_klines['rails']:
-        df = create_frame_historical(klines=rail)
-        assert not CandlestickFinder(data=df).is_railway_pattern()
+def test_not_patterns(history_bad_klines):
+    for pattern, klines in history_bad_klines.items():
+        for kline in klines:
+            df = create_frame_historical(klines=kline)
+            finder = CandlestickFinder(data=df)
+            if pattern == 'rails':
+                assert not finder.is_railway_pattern()
+            elif pattern == 'pinbars':
+                assert not finder.is_pin_bar_pattern()
 
-
-def test_pinbar(history_klines):
-    for pin in history_klines['pinbars']:
-        df = create_frame_historical(klines=pin)
-        assert CandlestickFinder(data=df).is_pin_bar_pattern()
-
-
-def test_not_pinbar(history_bad_klines):
-    for pin in history_bad_klines['pinbars']:
-        df = create_frame_historical(klines=pin)
-        assert not CandlestickFinder(data=df).is_pin_bar_pattern()
 
 # def test_create_txt_file(history_klines):
 #     for pattern, history in history_klines.items():

@@ -14,7 +14,7 @@ class CandlestickFinder:
         low_close = np.abs(self.data['Low'] - self.data['Close'].shift())
         ranges = pd.concat([high_low, high_close, low_close], axis=1)
         true_range = np.max(ranges, axis=1)
-        return (true_range.rolling(n).sum() / n)[0]
+        return true_range.rolling(n).sum().values[-1] / n
 
     def is_railway_pattern(self) -> bool:
         if self.current_bar.Direction != self.prev_bar.Direction:

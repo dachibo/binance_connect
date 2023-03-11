@@ -31,6 +31,7 @@ def check_patterns(symbol, df, interval):
 def main(msg):
     if 'result' not in msg and msg['k']['x'] is True:
         symbol, kline, interval = msg['s'], msg['k'], msg['k']['i']
+        logging.info(symbol, kline, interval)
         df_realtime = create_frame_realtime(kline)
         klines = client.klines(symbol=symbol, interval=interval, limit=14)[:-1]
         df_historical = create_frame_historical(klines=klines)

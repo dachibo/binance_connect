@@ -60,8 +60,8 @@ jobs:
       - name: Install deps
         if: steps.cache-deps.cache-hit != 'true'
         run: |
-          poetry config virtualenvs.in-project true
-          poetry config virtualenvs.in-project
+          #poetry config virtualenvs.in-project true
+          #poetry config virtualenvs.in-project
           poetry install --no-interaction
       - name: Run tests
         run: |

@@ -18,36 +18,30 @@ logging.basicConfig(
 client = UMFutures()
 
 
-def check_patterns(symbol, df):
+def check_patterns(symbol, df, interval):
     finder = CandlestickFinder(df)
     if finder.is_railway_pattern():
         send_message_tg_bot(f"Рельсы на {symbol}")
-        google_sheets_update(["Рельсы", symbol, int(finder.current_bar.CloseTime)])
+        google_sheets_update(["Рельсы", symbol, interval, int(finder.current_bar.CloseTime)])
     elif finder.is_pin_bar_pattern():
         send_message_tg_bot(f"Пин-бар на {symbol}")
-        google_sheets_update(["Пин-бар", symbol, int(finder.current_bar.CloseTime)])
+        google_sheets_update(["Пин-бар", symbol, interval, int(finder.current_bar.CloseTime)])
 
 
 def main(msg):
     if 'result' not in msg and msg['k']['x'] is True:
         symbol, kline, interval = msg['s'], msg['k'], msg['k']['i']
         df_realtime = create_frame_realtime(kline)
-        klines = client.klines(symbol=symbol, interval=interval, limit=7)[:-1]
+        klines = client.klines(symbol=symbol, interval=interval, limit=14)[:-1]
         df_historical = create_frame_historical(klines=klines)
         all_df = pd.concat([df_realtime, df_historical])
-        check_patterns(symbol=symbol, df=all_df)
+        check_patterns(symbol=symbol, df=all_df, interval=interval)
 
 
 if __name__ == '__main__':
     os.environ['SSL_CERT_FILE'] = certifi.where()
     my_client = UMFuturesWebsocketClient()
     my_client.start()
+    my_client.kline(symbol="BTCUSDT", id=1, interval="30m", callback=main)
     my_client.kline(symbol="BTCUSDT", id=1, interval="1h", callback=main)
-    my_client.kline(symbol="ETHUSDT", id=1, interval="1h", callback=main)
-    my_client.kline(symbol="XRPUSDT", id=1, interval="1h", callback=main)
-    my_client.kline(symbol="EOSUSDT", id=1, interval="1h", callback=main)
-    my_client.kline(symbol="LTCUSDT", id=1, interval="1h", callback=main)
-    my_client.kline(symbol="TRXUSDT", id=1, interval="1h", callback=main)
-    my_client.kline(symbol="ETCUSDT", id=1, interval="1h", callback=main)
-    my_client.kline(symbol="ADAUSDT", id=1, interval="1h", callback=main)
     # win32api.SetConsoleCtrlHandler(lambda _: ws_client.stop(), True)

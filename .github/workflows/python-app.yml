@@ -1,67 +1,32 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+name: Python package
 
-name: Python application
-
-on:
-  push:
-    branches: [ "master" ]
-#   pull_request:
-#     branches: [ "master" ]
-
-permissions:
-  contents: read
+on: [push]
 
 jobs:
-  test:
+  build:
+
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: "3.10"
+
     steps:
-      #----------------------------------------------
-      #       check-out repo and set-up python
-      #----------------------------------------------
-      - name: Check out repository
-        uses: actions/checkout@v3
-      - name: Set up python
-        id: setup-python
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
-      #----------------------------------------------
-      #  -----  install & configure poetry  -----
-      #----------------------------------------------
-      - name: Permacache Poetry
-        id: cache-poetry
-        uses: actions/cache@v2.1.4
-        with:
-          path: ~/.poetry
-          key: poetry
-      - name: Install latest version of Poetry
-        if: steps.cache-poetry.outputs.cache-hit != 'true'
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
         run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-      - name: Add Poetry to $PATH
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Lint with flake8
         run: |
-          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
-      - name: Add version to environment vars
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Test with pytest
         run: |
-          PROJECT_VERSION=$(poetry version --short)
-          echo "PROJECT_VERSION=$PROJECT_VERSION" >> $GITHUB_ENV      
-      - name: Get Poetry version
-        run: poetry --version
-      - name: Check pyproject.toml validity
-        run: poetry check --no-interaction
-      - name: Cache dependencies
-        id: cache-deps
-        uses: actions/cache@v2.1.4
-        with:
-          path: ${{github.workspace}}/.venv
-          key: poetry-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: poetry-
-      - name: Install deps
-        if: steps.cache-deps.cache-hit != 'true'
-        run: |
-          poetry config virtualenvs.in-project true
-          poetry install --no-interaction --no-root
-      - name: Run tests
-        run: |
-          poetry run pytest -v
+          pytest
